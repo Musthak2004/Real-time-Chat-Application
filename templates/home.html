@@ -3,16 +3,16 @@
 {% block title %}Home - Real-time Chat{% endblock %}
 
 {% block content %}
-<div class="card" style="text-align: center; max-width: 640px; margin: 40px auto;">
-  <h1 style="margin-bottom: 12px;">Welcome to ChatApp</h1>
-  <p style="color: var(--text-muted); margin-bottom: 24px;">
-    Real-time messaging at your fingertips.
-  </p>
+<div class="hero">
+  <h1>Welcome to ChatApp</h1>
+  <p>Real-time messaging at your fingertips. Connect, chat, and collaborate instantly.</p>
 
   {% if user.is_authenticated %}
-    <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Edit Profile</a>
+    <div class="hero-actions">
+      <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Edit Profile</a>
+    </div>
   {% else %}
-    <div style="display: flex; gap: 12px; justify-content: center;">
+    <div class="hero-actions">
       <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
       <a href="{% url 'accounts:signup' %}" class="btn btn-primary">Sign Up</a>
     </div>

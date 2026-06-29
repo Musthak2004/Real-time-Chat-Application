@@ -3,8 +3,8 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width: 480px; margin: 0 auto;">
-  <h2 style="margin-bottom: 24px;">Edit Profile</h2>
+<div class="card card-md">
+  <h2 class="card-title">Edit Profile</h2>
 
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -13,13 +13,16 @@
       <div class="form-group">
         {{ field.label_tag }}
         {{ field }}
+        {% if field.help_text %}
+          <div class="help-text">{{ field.help_text }}</div>
+        {% endif %}
         {% if field.errors %}
           <div class="form-errors">{{ field.errors|striptags }}</div>
         {% endif %}
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn btn-primary" style="width: 100%;">Update Profile</button>
+    <button type="submit" class="btn btn-primary btn-full">Update Profile</button>
   </form>
 </div>
 {% endblock %}

@@ -8,8 +8,10 @@
   --text-muted: #64748b;
   --border: #e2e8f0;
   --radius: 8px;
+  --radius-lg: 12px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
   --header-height: 64px;
   --footer-height: 56px;
 }
@@ -23,6 +25,7 @@
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -33,6 +36,13 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 a {
@@ -52,7 +62,9 @@ a:hover {
   top: 0;
   z-index: 50;
   height: var(--header-height);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.97);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
@@ -79,48 +91,56 @@ a:hover {
 .logo-icon {
   width: 32px;
   height: 32px;
-  background: var(--primary);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
 }
 
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
-.main-nav a {
+.main-nav a,
+.main-nav .nav-link {
   padding: 8px 16px;
   border-radius: var(--radius);
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-muted);
+  text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
 
-.main-nav a:hover {
+.main-nav a:hover,
+.main-nav .nav-link:hover {
   background: var(--primary-light);
   color: var(--primary);
 }
 
-.main-nav .nav-btn {
+.nav-btn {
   background: var(--primary);
   color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
 }
 
-.main-nav .nav-btn:hover {
+.nav-btn:hover {
   background: var(--primary-hover);
   color: #fff;
 }
 
+.nav-btn:active {
+  transform: scale(0.97);
+}
+
 .user-dropdown {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -172,6 +192,18 @@ a:hover {
   margin: 0 auto;
   padding: 32px 24px;
   width: 100%;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ─── Messages / Alerts ───────────────────────────────── */
@@ -189,6 +221,18 @@ a:hover {
   margin-bottom: 8px;
   font-size: 0.9rem;
   font-weight: 500;
+  animation: messageIn 0.3s ease-out;
+}
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .messages .success {
@@ -235,14 +279,47 @@ a:hover {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: 32px;
   box-shadow: var(--shadow);
+  transition: box-shadow 0.3s, transform 0.3s;
 }
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-sm {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.card-md {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.card-lg {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.card-centered {
+  text-align: center;
+}
+
+.card-title {
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ─── Buttons ──────────────────────────────────────────── */
 
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 10px 20px;
   border-radius: var(--radius);
@@ -250,8 +327,13 @@ a:hover {
   font-weight: 500;
   border: none;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
   text-decoration: none;
+  line-height: 1.4;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -262,6 +344,7 @@ a:hover {
 .btn-primary:hover {
   background: var(--primary-hover);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .btn-outline {
@@ -272,12 +355,24 @@ a:hover {
 
 .btn-outline:hover {
   background: var(--bg);
+  border-color: var(--text-muted);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* ─── Form Styles ──────────────────────────────────────── */
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
@@ -310,13 +405,88 @@ a:hover {
   box-shadow: 0 0 0 3px var(--primary-light);
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
 .form-errors {
   color: #dc2626;
   font-size: 0.8rem;
   margin-top: 4px;
 }
 
+.form-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.form-footer a {
+  font-weight: 500;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ─── Hero Section ─────────────────────────────────────── */
+
+.hero {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ─── Section title (for future pages) ─────────────────── */
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
 /* ─── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero {
+    padding: 32px 16px;
+  }
+}
 
 @media (max-width: 640px) {
   .header-inner {
@@ -327,12 +497,47 @@ a:hover {
     padding: 20px 16px;
   }
 
-  .main-nav a {
+  .main-nav a,
+  .main-nav .nav-link,
+  .nav-btn {
     padding: 6px 10px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
   }
 
   .user-dropdown .username {
     display: none;
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero h1 {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .nav-btn {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+  }
+
+  .main-nav a {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+  }
+
+  .logo {
+    font-size: 1.05rem;
   }
 }
