@@ -34,6 +34,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 INSTALLED_APPS = [
     'accounts',
+    'pages',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
