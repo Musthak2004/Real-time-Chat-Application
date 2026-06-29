@@ -31,10 +31,10 @@
             </div>
             <span class="username">{{ user.username }}</span>
           </div>
-          <a href="{% url 'logout' %}" class="nav-btn">Logout</a>
+          <a href="{% url 'auth:logout' %}" class="nav-btn">Logout</a>
         {% else %}
-          <a href="{% url 'login' %}">Login</a>
-          <a href="{% url 'signup' %}" class="nav-btn">Sign Up</a>
+          <a href="{% url 'auth:login' %}">Login</a>
+          <a href="{% url 'accounts:signup' %}" class="nav-btn">Sign Up</a>
         {% endif %}
       </nav>
     </div>

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width: 480px; margin: 0 auto;">
-  <h2 style="margin-bottom: 24px;">Create Account</h2>
+  <h2 style="margin-bottom: 24px;">Edit Profile</h2>
 
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -19,11 +19,7 @@
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Update Profile</button>
   </form>
-
-  <p style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
-    Already have an account? <a href="{% url 'auth:login' %}">Login</a>
-  </p>
 </div>
 {% endblock %}

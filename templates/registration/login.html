@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 0 auto;">
+  <h2 style="margin-bottom: 24px;">Login</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+          <div class="form-errors">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+      <div class="form-errors" style="margin-bottom: 12px;">{{ form.non_field_errors|striptags }}</div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+  </form>
+
+  <p style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
+    Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up</a>
+  </p>
+</div>
+{% endblock %}
