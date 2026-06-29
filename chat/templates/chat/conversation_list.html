@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Conversations{% endblock %}
+
+{% block content %}
+<div class="chat-header">
+  <h1>Conversations</h1>
+  <a href="{% url 'chat:conversation_create' %}" class="btn btn-primary">New Conversation</a>
+</div>
+
+{% if conversations %}
+  <div class="conversation-list">
+    {% for conversation in conversations %}
+      <a href="{% url 'chat:conversation_detail' conversation.pk %}" class="conversation-card">
+        <div class="conv-avatar">
+          {% if conversation.conversation_type == "GROUP" %}
+            {{ conversation.name|first|default:"G"|upper }}
+          {% else %}
+            {% with first_participant=conversation.participants.all|first %}
+              {{ first_participant.username|first|upper }}
+            {% endwith %}
+          {% endif %}
+        </div>
+        <div class="conv-info">
+          <div class="conv-name">
+            {% if conversation.conversation_type == "GROUP" %}
+              {{ conversation.name|default:"Unnamed Group" }}
+            {% else %}
+              {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                  {{ participant.username }}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="conv-preview">
+            {% if conversation.conversation_type == "GROUP" %}
+              {{ conversation.participants.count }} members
+            {% else %}
+              Private conversation
+            {% endif %}
+          </div>
+        </div>
+        <div class="conv-meta">
+          <div class="conv-time">{{ conversation.updated_at|date:"M j" }}</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card card-centered" style="padding: 48px;">
+    <p style="color: var(--text-muted); margin-bottom: 16px;">No conversations yet.</p>
+    <a href="{% url 'chat:conversation_create' %}" class="btn btn-primary">Start a Conversation</a>
+  </div>
+{% endif %}
+{% endblock %}

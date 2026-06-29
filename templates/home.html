@@ -9,6 +9,7 @@
 
   {% if user.is_authenticated %}
     <div class="hero-actions">
+      <a href="{% url 'chat:conversation_list' %}" class="btn btn-primary">My Conversations</a>
       <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Edit Profile</a>
     </div>
   {% else %}

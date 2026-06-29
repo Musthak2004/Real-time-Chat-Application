@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if conversation.conversation_type == "GROUP" %}
+    {{ conversation.name|default:"Group" }}
+  {% else %}
+    {% for participant in conversation.participants.all %}
+      {% if participant != request.user %}
+        {{ participant.username }}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="chat-detail">
+  <div class="chat-detail-header">
+    <a href="{% url 'chat:conversation_list' %}" class="back-btn">&larr;</a>
+    <div class="conv-avatar">
+      {% if conversation.conversation_type == "GROUP" %}
+        {{ conversation.name|first|default:"G"|upper }}
+      {% else %}
+        {% with first_participant=conversation.participants.all|first %}
+          {{ first_participant.username|first|upper }}
+        {% endwith %}
+      {% endif %}
+    </div>
+    <div>
+      <div class="conv-name">
+        {% if conversation.conversation_type == "GROUP" %}
+          {{ conversation.name|default:"Unnamed Group" }}
+        {% else %}
+          {% for participant in conversation.participants.all %}
+            {% if participant != request.user %}
+              {{ participant.username }}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="conv-status">
+        {% if conversation.conversation_type == "GROUP" %}
+          {{ conversation.participants.count }} members
+        {% else %}
+          Online
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-messages">
+    <div class="empty">
+      <p>No messages yet. Start the conversation!</p>
+    </div>
+  </div>
+
+  <form class="chat-input-area" method="post">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Type a message..." autofocus>
+    <button type="submit" aria-label="Send">&rarr;</button>
+  </form>
+</div>
+{% endblock %}
