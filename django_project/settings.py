@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'pages',
     'chat',
     'chat_messages',
+    'notifications',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,8 +129,6 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-AUTH_USER_MODEL = "accounts.CustomUser"
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
