@@ -80,11 +80,60 @@
     {% endfor %}
   </div>
 
-  <form class="chat-input-area" method="post" action="{% url 'chat_messages:send_message' conversation.pk %}">
+  <form class="chat-input-area" id="chat-form" method="post" action="{% url 'chat_messages:send_message' conversation.pk %}">
     {% csrf_token %}
-    <input type="text" name="content" placeholder="Type a message..." autofocus required>
+    <input type="text" id="chat-input" name="content" placeholder="Type a message..." autofocus required>
     <input type="hidden" name="message_type" value="TEXT">
     <button type="submit" aria-label="Send">&rarr;</button>
   </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const conversationId = {{ conversation.pk }};
+  const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const wsUrl = `${wsScheme}://${window.location.host}/ws/chat/${conversationId}/`;
+  let ws = new WebSocket(wsUrl);
+  let reconnectTimer = null;
+
+  ws.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    if (data.sender_id === undefined) return;
+
+    const container = document.querySelector('.chat-messages');
+    const empty = container.querySelector('.empty');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = 'message' + (data.sender_username === '{{ request.user.username }}' ? ' sent' : ' received');
+    div.innerHTML = (
+      (data.sender_username !== '{{ request.user.username }}' ? '<div class="msg-sender">' + data.sender_username + '</div>' : '') +
+      '<div>' + data.content + '</div>' +
+      '<div class="msg-time">' + new Date(data.created_at).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + '</div>'
+    );
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  };
+
+  ws.onclose = function() {
+    if (reconnectTimer) return;
+    reconnectTimer = setTimeout(function() {
+      ws = new WebSocket(wsUrl);
+      reconnectTimer = null;
+    }, 3000);
+  };
+
+  document.getElementById('chat-form').addEventListener('submit', function(e) {
+    const input = document.getElementById('chat-input');
+    const content = input.value.trim();
+    if (!content) { e.preventDefault(); return; }
+
+    if (ws.readyState === WebSocket.OPEN) {
+      e.preventDefault();
+      ws.send(JSON.stringify({ content: content }));
+      input.value = '';
+    }
+  });
+</script>
 {% endblock %}
