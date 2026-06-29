@@ -21,7 +21,7 @@
         <a href="{% url 'home' %}">Home</a>
 
         {% if user.is_authenticated %}
-          <div class="user-dropdown">
+          <a href="{% url 'accounts:profile' %}" class="user-dropdown">
             <div class="avatar">
               {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}">
@@ -30,10 +30,13 @@
               {% endif %}
             </div>
             <span class="username">{{ user.username }}</span>
-          </div>
-          <a href="{% url 'auth:logout' %}" class="nav-btn">Logout</a>
+          </a>
+          <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="nav-btn" style="border:none;cursor:pointer;">Logout</button>
+          </form>
         {% else %}
-          <a href="{% url 'auth:login' %}">Login</a>
+          <a href="{% url 'login' %}">Login</a>
           <a href="{% url 'accounts:signup' %}" class="nav-btn">Sign Up</a>
         {% endif %}
       </nav>

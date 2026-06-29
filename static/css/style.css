@@ -128,10 +128,13 @@ a:hover {
   border-radius: var(--radius);
   cursor: pointer;
   transition: background 0.2s;
+  color: inherit;
+  text-decoration: none;
 }
 
 .user-dropdown:hover {
   background: var(--primary-light);
+  color: inherit;
 }
 
 .avatar {
