@@ -20,9 +20,11 @@
       {% if conversation.conversation_type == "GROUP" %}
         {{ conversation.name|first|default:"G"|upper }}
       {% else %}
-        {% with first_participant=conversation.participants.all|first %}
-          {{ first_participant.username|first|upper }}
-        {% endwith %}
+        {% for participant in conversation.participants.all %}
+          {% if participant != request.user %}
+            {{ participant.username|first|upper }}
+          {% endif %}
+        {% endfor %}
       {% endif %}
     </div>
     <div>

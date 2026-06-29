@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from chat.models import Conversation
+from notifications.models import Notification
 
 from .forms import MessageForm
 from .models import Message
@@ -44,7 +45,20 @@ class MessageCreateView(
 
         form.instance.conversation = conversation
 
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        for participant in conversation.participants.exclude(
+            pk=self.request.user.pk
+        ):
+            Notification.objects.create(
+                recipient=participant,
+                sender=self.request.user,
+                notification_type="MESSAGE",
+                title=f"New message from {self.request.user.username}",
+                message=form.instance.content[:100] or "[attachment]",
+            )
+
+        return response
 
     def get_success_url(self):
 

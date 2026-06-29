@@ -70,10 +70,12 @@
 
   <form class="chat-input-area" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.content }}
-    {% if form.content.errors %}
-      <div class="form-errors">{{ form.content.errors|striptags }}</div>
-    {% endif %}
+    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+      {{ form.content }}
+      {% if form.content.errors %}
+        <div class="form-errors">{{ form.content.errors|striptags }}</div>
+      {% endif %}
+    </div>
     <button type="submit" aria-label="Send">&rarr;</button>
   </form>
 </div>
