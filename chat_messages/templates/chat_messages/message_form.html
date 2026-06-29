@@ -1,21 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}
-  {% if conversation.conversation_type == "GROUP" %}
-    {{ conversation.name|default:"Group" }}
-  {% else %}
-    {% for participant in conversation.participants.all %}
-      {% if participant != request.user %}
-        {{ participant.username }}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-{% endblock %}
+{% block title %}Send Message{% endblock %}
 
 {% block content %}
 <div class="chat-detail">
   <div class="chat-detail-header">
-    <a href="{% url 'chat:conversation_list' %}" class="back-btn">&larr;</a>
+    <a href="{% url 'chat:conversation_detail' conversation.pk %}" class="back-btn">&larr;</a>
     <div class="conv-avatar">
       {% if conversation.conversation_type == "GROUP" %}
         {{ conversation.name|first|default:"G"|upper }}
@@ -41,7 +31,7 @@
         {% if conversation.conversation_type == "GROUP" %}
           {{ conversation.participants.count }} members
         {% else %}
-          Online
+          Private conversation
         {% endif %}
       </div>
     </div>
@@ -78,10 +68,12 @@
     {% endfor %}
   </div>
 
-  <form class="chat-input-area" method="post" action="{% url 'chat_messages:send_message' conversation.pk %}">
+  <form class="chat-input-area" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" name="content" placeholder="Type a message..." autofocus required>
-    <input type="hidden" name="message_type" value="TEXT">
+    {{ form.content }}
+    {% if form.content.errors %}
+      <div class="form-errors">{{ form.content.errors|striptags }}</div>
+    {% endif %}
     <button type="submit" aria-label="Send">&rarr;</button>
   </form>
 </div>

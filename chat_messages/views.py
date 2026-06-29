@@ -20,6 +20,18 @@ class MessageCreateView(
 
     template_name = "chat_messages/message_form.html"
 
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context["conversation"] = get_object_or_404(
+            Conversation,
+            pk=self.kwargs["conversation_id"],
+            participants=self.request.user,
+        )
+
+        return context
+
     def form_valid(self, form):
 
         conversation = get_object_or_404(
