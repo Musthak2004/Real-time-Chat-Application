@@ -1,3 +1,91 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-# Create your views here.
+from django.shortcuts import (
+    get_object_or_404,
+    redirect,
+)
+
+from django.views.generic import (
+    ListView,
+    View,
+)
+
+from .models import Notification
+
+class NotificationListView(
+    LoginRequiredMixin,
+    ListView
+):
+
+    model = Notification
+
+    template_name = (
+        "notifications/notification_list.html"
+    )
+
+    context_object_name = (
+        "notifications"
+    )
+
+    def get_queryset(self):
+
+        return Notification.objects.filter(
+            recipient=self.request.user
+        )
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context["unread_count"] = self.get_queryset().filter(
+            is_read=False
+        ).count()
+
+        return context
+
+class MarkAsReadView(
+    LoginRequiredMixin,
+    View
+):
+
+    def post(
+        self,
+        request,
+        pk
+    ):
+
+        notification = get_object_or_404(
+            Notification,
+            pk=pk,
+            recipient=request.user
+        )
+
+        notification.is_read = True
+
+        notification.save()
+
+        return redirect(
+            "notifications:list"
+        )
+
+
+class MarkAllAsReadView(
+    LoginRequiredMixin,
+    View
+):
+
+    def post(
+        self,
+        request
+    ):
+
+        Notification.objects.filter(
+            recipient=request.user,
+            is_read=False,
+        ).update(
+            is_read=True
+        )
+
+        return redirect(
+            "notifications:list"
+        )

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="chat-header">
+  <h1>Notifications</h1>
+  {% if unread_count %}
+    <form method="post" action="{% url 'notifications:read_all' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline">Mark All as Read</button>
+    </form>
+  {% endif %}
+</div>
+
+{% if notifications %}
+  {% for notification in notifications %}
+    <div class="conversation-card" style="margin-bottom: 8px;{% if not notification.is_read %} border-color: var(--primary-light); background: #f0f5ff;{% endif %}">
+      <div class="conv-avatar" style="font-size: 1.2rem;">
+        {% if notification.notification_type == "MESSAGE" %}
+          💬
+        {% elif notification.notification_type == "GROUP" %}
+          👥
+        {% elif notification.notification_type == "REACTION" %}
+          👍
+        {% elif notification.notification_type == "CALL" %}
+          📞
+        {% else %}
+          🔔
+        {% endif %}
+      </div>
+      <div class="conv-info">
+        <div class="conv-name">{{ notification.title }}</div>
+        <div class="conv-preview">{{ notification.message }}</div>
+      </div>
+      <div class="conv-meta">
+        <div class="conv-time">{{ notification.created_at|timesince }} ago</div>
+        {% if not notification.is_read %}
+          <form method="post" action="{% url 'notifications:read' notification.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline" style="font-size: 0.75rem; padding: 4px 10px; margin-top: 4px; white-space: nowrap;">Mark Read</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="card card-centered" style="padding: 48px;">
+    <p style="color: var(--text-muted); margin-bottom: 16px;">All caught up! No notifications.</p>
+    <a href="{% url 'chat:conversation_list' %}" class="btn btn-primary">Go to Conversations</a>
+  </div>
+{% endif %}
+{% endblock %}
