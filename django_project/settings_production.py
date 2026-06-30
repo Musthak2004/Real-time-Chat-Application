@@ -2,8 +2,12 @@ import os
 
 from .settings import *  # noqa: F403
 
+_secret_key = os.environ.get("SECRET_KEY")
+if not _secret_key:
+    raise RuntimeError("SECRET_KEY env var is required in production")
+SECRET_KEY = _secret_key
+
 # ─── Security ────────────────────────────────────────────
-SECRET_KEY = os.environ["SECRET_KEY"]
 
 DEBUG = False
 

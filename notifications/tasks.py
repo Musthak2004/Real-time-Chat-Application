@@ -5,20 +5,20 @@ from notifications.models import Notification
 
 
 @shared_task(bind=True, max_retries=2)
-def create_notification(self, conversation_id, sender_id, content):
+def create_notification(self, conversation_id, sender_id, sender_username, content):
 
     try:
-        conversation = Conversation.objects.get(pk=conversation_id)
+        conversation = Conversation.objects.only("pk").get(pk=conversation_id)
     except Conversation.DoesNotExist:
         return
 
-    sender_name = conversation.participants.get(pk=sender_id).username
+    participants = conversation.participants.exclude(pk=sender_id).only("pk")
 
-    for participant in conversation.participants.exclude(pk=sender_id):
+    for participant in participants.iterator():
         Notification.objects.create(
             recipient=participant,
             sender_id=sender_id,
             notification_type="MESSAGE",
-            title=f"New message from {sender_name}",
+            title=f"New message from {sender_username}",
             message=content[:100] or "[attachment]",
         )

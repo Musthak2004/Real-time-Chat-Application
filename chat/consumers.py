@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from channels.db import database_sync_to_async
@@ -61,10 +62,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
 
-        create_notification.delay(
-            conversation_id=self.conversation_id,
-            sender_id=self.user.id,
-            content=content,
+        asyncio.ensure_future(
+            asyncio.to_thread(
+                create_notification.delay,
+                conversation_id=self.conversation_id,
+                sender_id=self.user.id,
+                sender_username=self.user.username,
+                content=content,
+            )
         )
 
     async def chat_message(self, event):

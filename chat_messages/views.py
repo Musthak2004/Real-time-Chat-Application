@@ -57,6 +57,7 @@ class MessageCreateView(
         create_notification.delay(
             conversation_id=conversation.pk,
             sender_id=self.request.user.pk,
+            sender_username=self.request.user.username,
             content=form.instance.content or "",
         )
 
