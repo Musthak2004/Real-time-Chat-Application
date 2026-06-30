@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count, Prefetch
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -22,6 +23,8 @@ class ConversationListView(
     template_name = "chat/conversation_list.html"
 
     context_object_name = "conversations"
+
+    paginate_by = 50
 
     def get_queryset(self):
 
@@ -51,7 +54,7 @@ class ConversationDetailView(
 
         context = super().get_context_data(**kwargs)
 
-        context["messages"] = (
+        context["chat_messages"] = (
             self.object.messages
             .select_related("sender")
             .order_by("created_at")
@@ -61,6 +64,7 @@ class ConversationDetailView(
 
 class ConversationCreateView(
     LoginRequiredMixin,
+    SuccessMessageMixin,
     CreateView
 ):
 
@@ -73,6 +77,8 @@ class ConversationCreateView(
     success_url = reverse_lazy(
         "chat:conversation_list"
     )
+
+    success_message = "Conversation created successfully."
 
     def form_valid(
         self,

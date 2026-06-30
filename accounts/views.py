@@ -1,5 +1,6 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -14,7 +15,7 @@ from .forms import (
 from .models import CustomUser
 
 
-class SignUpView(CreateView):
+class SignUpView(SuccessMessageMixin, CreateView):
 
     model = CustomUser
 
@@ -22,7 +23,9 @@ class SignUpView(CreateView):
 
     template_name = "registration/signup.html"
 
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("pages:home")
+
+    success_message = "Account created successfully. Welcome!"
 
     def form_valid(self, form):
 
@@ -36,7 +39,7 @@ class SignUpView(CreateView):
         return response
 
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     model = CustomUser
 
@@ -44,7 +47,9 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     template_name = "accounts/profile_update.html"
 
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("pages:home")
+
+    success_message = "Profile updated successfully."
 
     def get_object(self):
 

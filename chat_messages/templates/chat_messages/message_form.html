@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load chat_tags %}
 
 {% block title %}Send Message{% endblock %}
 
@@ -7,48 +6,12 @@
 <div class="chat-detail">
   <div class="chat-detail-header">
     <a href="{% url 'chat:conversation_detail' conversation.pk %}" class="back-btn">&larr;</a>
-    <div class="conv-avatar">
-      {{ conversation|display_initial:request.user }}
-    </div>
-    <div>
-      <div class="conv-name">
-        {{ conversation|display_name:request.user }}
-      </div>
-      <div class="conv-status">
-        {{ conversation|display_status:request.user }}
-      </div>
-    </div>
+    {% include "chat/_conversation_header.html" %}
   </div>
 
+
   <div class="chat-messages">
-    {% for message in messages %}
-      <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-        {% if message.sender != request.user %}
-          <div class="msg-sender">{{ message.sender.username }}</div>
-        {% endif %}
-        {% if message.message_type == "TEXT" %}
-          <div>{{ message.content }}</div>
-        {% else %}
-          <div>{{ message.content }}</div>
-          {% if message.attachment %}
-            <div class="msg-attachment">
-              <a href="{{ message.attachment.url }}" target="_blank">
-                {% if message.message_type == "IMAGE" %}
-                  <img src="{{ message.attachment.url }}" alt="Image" class="msg-image">
-                {% else %}
-                  {{ message.attachment.name }}
-                {% endif %}
-              </a>
-            </div>
-          {% endif %}
-        {% endif %}
-        <div class="msg-time">{{ message.created_at|time:"g:i A" }}</div>
-      </div>
-    {% empty %}
-      <div class="empty">
-        <p>No messages yet. Start the conversation!</p>
-      </div>
-    {% endfor %}
+    {% include "chat/_message_list.html" %}
   </div>
 
   <form class="chat-input-area" method="post" enctype="multipart/form-data">

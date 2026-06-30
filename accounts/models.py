@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class CustomUser(AbstractUser):
@@ -61,8 +63,6 @@ class CustomUser(AbstractUser):
     ]
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-        from django.utils import timezone
         if self.date_of_birth and self.date_of_birth > timezone.now().date():
             raise ValidationError({"date_of_birth": "Date of birth cannot be in the future."})
 

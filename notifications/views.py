@@ -1,10 +1,9 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from django.shortcuts import (
     get_object_or_404,
     redirect,
 )
-
 from django.views.generic import (
     ListView,
     View,
@@ -26,6 +25,8 @@ class NotificationListView(
     context_object_name = (
         "notifications"
     )
+
+    paginate_by = 50
 
     def get_queryset(self):
 
@@ -64,6 +65,11 @@ class MarkAsReadView(
 
         notification.save()
 
+        messages.success(
+            request,
+            "Notification marked as read.",
+        )
+
         return redirect(
             "notifications:list"
         )
@@ -79,12 +85,18 @@ class MarkAllAsReadView(
         request
     ):
 
-        Notification.objects.filter(
+        count = Notification.objects.filter(
             recipient=request.user,
             is_read=False,
         ).update(
             is_read=True
         )
+
+        if count:
+            messages.success(
+                request,
+                f"{count} notification{'s' if count != 1 else ''} marked as read.",
+            )
 
         return redirect(
             "notifications:list"

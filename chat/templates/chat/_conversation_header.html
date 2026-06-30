@@ -1,0 +1,12 @@
+{% load chat_tags %}
+<div class="conv-avatar">
+  {{ conversation|display_initial:request.user }}
+</div>
+<div>
+  <div class="conv-name">
+    {{ conversation|display_name:request.user }}
+  </div>
+  <div class="conv-status">
+    {{ conversation|display_status:request.user }}
+  </div>
+</div>

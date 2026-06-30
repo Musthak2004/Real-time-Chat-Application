@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load chat_tags %}
+{% load static chat_tags %}
 
 {% block title %}
   {{ conversation|display_name:request.user }}
@@ -9,48 +9,12 @@
 <div class="chat-detail">
   <div class="chat-detail-header">
     <a href="{% url 'chat:conversation_list' %}" class="back-btn">&larr;</a>
-    <div class="conv-avatar">
-      {{ conversation|display_initial:request.user }}
-    </div>
-    <div>
-      <div class="conv-name">
-        {{ conversation|display_name:request.user }}
-      </div>
-      <div class="conv-status">
-        {{ conversation|display_status:request.user }}
-      </div>
-    </div>
+    {% include "chat/_conversation_header.html" %}
   </div>
 
-  <div class="chat-messages">
-    {% for message in messages %}
-      <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-        {% if message.sender != request.user %}
-          <div class="msg-sender">{{ message.sender.username }}</div>
-        {% endif %}
-        {% if message.message_type == "TEXT" %}
-          <div>{{ message.content }}</div>
-        {% else %}
-          <div>{{ message.content }}</div>
-          {% if message.attachment %}
-            <div class="msg-attachment">
-              <a href="{{ message.attachment.url }}" target="_blank">
-                {% if message.message_type == "IMAGE" %}
-                  <img src="{{ message.attachment.url }}" alt="Image" class="msg-image">
-                {% else %}
-                  {{ message.attachment.name }}
-                {% endif %}
-              </a>
-            </div>
-          {% endif %}
-        {% endif %}
-        <div class="msg-time">{{ message.created_at|time:"g:i A" }}</div>
-      </div>
-    {% empty %}
-      <div class="empty">
-        <p>No messages yet. Start the conversation!</p>
-      </div>
-    {% endfor %}
+
+  <div class="chat-messages" id="chat-messages">
+    {% include "chat/_message_list.html" %}
   </div>
 
   <form class="chat-input-area" id="chat-form" method="post" action="{% url 'chat_messages:send_message' conversation.pk %}">
@@ -67,65 +31,8 @@
 
 {% block extra_js %}
 <script>
-  const conversationId = {{ conversation.pk }};
-  const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-  const wsUrl = `${wsScheme}://${window.location.host}/ws/chat/${conversationId}/`;
-  let ws = null;
-  let reconnectTimer = null;
-
-  function connectWebSocket() {
-    ws = new WebSocket(wsUrl);
-
-    ws.onmessage = function(e) {
-      const data = JSON.parse(e.data);
-      if (data.sender_id === undefined) return;
-
-      const container = document.querySelector('.chat-messages');
-      const empty = container.querySelector('.empty');
-      if (empty) empty.remove();
-
-      const div = document.createElement('div');
-      div.className = 'message' + (data.sender_username === '{{ request.user.username }}' ? ' sent' : ' received');
-
-      if (data.sender_username !== '{{ request.user.username }}') {
-        const sender = document.createElement('div');
-        sender.className = 'msg-sender';
-        sender.textContent = data.sender_username;
-        div.appendChild(sender);
-      }
-      const body = document.createElement('div');
-      body.textContent = data.content;
-      div.appendChild(body);
-      const time = document.createElement('div');
-      time.className = 'msg-time';
-      time.textContent = new Date(data.created_at).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-      div.appendChild(time);
-
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    };
-
-    ws.onclose = function() {
-      if (reconnectTimer) return;
-      reconnectTimer = setTimeout(function() {
-        reconnectTimer = null;
-        connectWebSocket();
-      }, 3000);
-    };
-  }
-
-  connectWebSocket();
-
-  document.getElementById('chat-form').addEventListener('submit', function(e) {
-    const input = document.getElementById('chat-input');
-    const content = input.value.trim();
-    if (!content) { e.preventDefault(); return; }
-
-    if (ws.readyState === WebSocket.OPEN) {
-      e.preventDefault();
-      ws.send(JSON.stringify({ content: content }));
-      input.value = '';
-    }
-  });
+  const CONVERSATION_ID = {{ conversation.pk }};
+  const USERNAME = '{{ request.user.username }}';
 </script>
+<script src="{% static 'js/chat.js' %}"></script>
 {% endblock %}

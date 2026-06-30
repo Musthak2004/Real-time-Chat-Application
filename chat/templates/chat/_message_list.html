@@ -1,0 +1,28 @@
+{% for message in chat_messages %}
+  <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+    {% if message.sender != request.user %}
+      <div class="msg-sender">{{ message.sender.username }}</div>
+    {% endif %}
+    {% if message.message_type == "TEXT" %}
+      <div>{{ message.content }}</div>
+    {% else %}
+      <div>{{ message.content }}</div>
+      {% if message.attachment %}
+        <div class="msg-attachment">
+          <a href="{{ message.attachment.url }}" target="_blank">
+            {% if message.message_type == "IMAGE" %}
+              <img src="{{ message.attachment.url }}" alt="Image" class="msg-image">
+            {% else %}
+              {{ message.attachment.name }}
+            {% endif %}
+          </a>
+        </div>
+      {% endif %}
+    {% endif %}
+    <div class="msg-time">{{ message.created_at|time:"g:i A" }}</div>
+  </div>
+{% empty %}
+  <div class="empty">
+    <p>No messages yet. Start the conversation!</p>
+  </div>
+{% endfor %}

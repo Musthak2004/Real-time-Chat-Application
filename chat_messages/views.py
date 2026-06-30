@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views.generic import CreateView
 
 from chat.models import Conversation
@@ -31,7 +31,7 @@ class MessageCreateView(
             participants=self.request.user,
         )
 
-        context["messages"] = (
+        context["chat_messages"] = (
             context["conversation"]
             .messages
             .select_related("sender")
@@ -64,7 +64,7 @@ class MessageCreateView(
 
     def get_success_url(self):
 
-        return reverse_lazy(
+        return reverse(
             "chat:conversation_detail",
             kwargs={
                 "pk": self.kwargs["conversation_id"]
