@@ -6,7 +6,15 @@
 {% block content %}
 <div class="chat-header">
   <h1>Conversations</h1>
-  <a href="{% url 'chat:conversation_create' %}" class="btn btn-primary">New Conversation</a>
+  <div class="chat-header-actions">
+    <a href="{% url 'chat:conversation_create' %}" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New
+    </a>
+  </div>
 </div>
 
 {% if conversations %}
@@ -22,9 +30,19 @@
           </div>
           <div class="conv-preview">
             {% if conversation.conversation_type == "GROUP" %}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
               {{ conversation.member_count }} members
             {% else %}
-              Private conversation
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Private
             {% endif %}
           </div>
         </div>
@@ -34,6 +52,18 @@
       </a>
     {% endfor %}
   </div>
+
+  {% if is_paginated %}
+    <div class="pagination" role="navigation" aria-label="Conversation pages">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+      {% endif %}
+      <span class="current">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+      {% endif %}
+    </div>
+  {% endif %}
 {% else %}
   <div class="card card-centered empty-state">
     <p>No conversations yet.</p>

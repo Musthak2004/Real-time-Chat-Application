@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Server Error{% endblock %}
+{% block title %}Server Error — ChatApp{% endblock %}
 
 {% block content %}
 <div class="hero">
+  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 24px; display: block;" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
   <h1>500 — Internal Server Error</h1>
   <p>Something went wrong on our end. Please try again later.</p>
   <div class="hero-actions">
