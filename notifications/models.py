@@ -16,6 +16,7 @@ class Notification(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="notifications",
+        related_query_name="notification",
         verbose_name="recipient",
     )
 
@@ -25,6 +26,7 @@ class Notification(models.Model):
         null=True,
         blank=True,
         related_name="sent_notifications",
+        related_query_name="sent_notification",
         verbose_name="sender",
     )
 
@@ -61,6 +63,10 @@ class Notification(models.Model):
             models.Index(fields=["recipient", "-created_at"]),
             models.Index(fields=["recipient", "is_read"]),
         ]
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse("notifications:list")
 
     def __str__(self):
         return f"{self.recipient.username} - {self.title[:50]}"

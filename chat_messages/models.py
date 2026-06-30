@@ -18,6 +18,7 @@ class Message(models.Model):
         Conversation,
         on_delete=models.CASCADE,
         related_name="messages",
+        related_query_name="message",
         verbose_name="conversation",
     )
 
@@ -25,6 +26,7 @@ class Message(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="sent_messages",
+        related_query_name="sent_message",
         verbose_name="sender",
     )
 
@@ -81,6 +83,7 @@ class MessageRead(models.Model):
         Message,
         on_delete=models.CASCADE,
         related_name="read_receipts",
+        related_query_name="read_receipt",
         verbose_name="message",
     )
 
@@ -88,6 +91,7 @@ class MessageRead(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="read_receipts",
+        related_query_name="read_receipt",
         verbose_name="user",
     )
 
@@ -122,6 +126,7 @@ class MessageReaction(models.Model):
         Message,
         on_delete=models.CASCADE,
         related_name="reactions",
+        related_query_name="reaction",
         verbose_name="message",
     )
 
@@ -129,6 +134,7 @@ class MessageReaction(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="reactions",
+        related_query_name="reaction",
         verbose_name="user",
     )
 

@@ -35,16 +35,11 @@ if not DEBUG:
 # ─── Auth ────────────────────────────────────────────────
 AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "pages:home"
+LOGOUT_REDIRECT_URL = "pages:home"
 
 # ─── Applications ────────────────────────────────────────
 INSTALLED_APPS = [
-    "accounts",
-    "pages",
-    "chat",
-    "chat_messages",
-    "notifications",
     "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -53,6 +48,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "storages",
+    "accounts",
+    "pages",
+    "chat",
+    "chat_messages",
+    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -97,6 +97,9 @@ TEMPLATES = [
     },
 ]
 
+# ─── Default primary key ──────────────────────────────────
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 # ─── Database ────────────────────────────────────────────
 DATABASES = {
     "default": {
@@ -129,7 +132,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 

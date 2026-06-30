@@ -32,6 +32,7 @@ class Conversation(models.Model):
     participants = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="conversations",
+        related_query_name="conversation",
         verbose_name="participants",
     )
 
@@ -40,6 +41,7 @@ class Conversation(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="created_conversations",
+        related_query_name="created_conversation",
         verbose_name="created by",
     )
 
@@ -60,31 +62,14 @@ class Conversation(models.Model):
             models.Index(fields=["-updated_at"]),
         ]
 
-    def display_name(self, user):
-        if self.conversation_type == "GROUP":
-            return self.name or "Unnamed Group"
-        other = self.participants.exclude(pk=user.pk).first()
-        return other.username if other else "Unknown"
-
-    def display_initial(self, user):
-        if self.conversation_type == "GROUP":
-            return (self.name or "G")[0].upper()
-        other = self.participants.exclude(pk=user.pk).first()
-        return other.username[0].upper() if other else "?"
-
-    def display_status(self, user):
-        if self.conversation_type == "GROUP":
-            return f"{self.participants.count()} members"
-        other = self.participants.exclude(pk=user.pk).first()
-        if other and other.is_online:
-            return "Online"
-        return "Offline"
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse("chat:conversation_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         if self.conversation_type == "GROUP":
             return self.name or f"Group ({self.id})"
-        participants = self.participants.values_list("username", flat=True)
-        return ", ".join(participants) or f"Conversation {self.id}"
+        return f"Conversation {self.id}"
 
 
 class ConversationMember(models.Model):
@@ -93,6 +78,7 @@ class ConversationMember(models.Model):
         Conversation,
         on_delete=models.CASCADE,
         related_name="members",
+        related_query_name="member",
         verbose_name="conversation",
     )
 
@@ -100,6 +86,7 @@ class ConversationMember(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="conversation_memberships",
+        related_query_name="conversation_membership",
         verbose_name="user",
     )
 
