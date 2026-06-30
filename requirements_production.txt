@@ -1,0 +1,25 @@
+# Core
+Django==6.0.6
+asgiref==3.11.1
+sqlparse==0.5.5
+tzdata==2026.2
+typing_extensions==4.15.0
+
+# Channels (installed but unused under WSGI — InMemoryChannelLayer fallback)
+channels==4.3.2
+daphne==4.2.2
+
+# Celery (runs eagerly with CELERY_TASK_ALWAYS_EAGER=True — no broker needed)
+celery==5.6.3
+
+# Database
+# SQLite is built-in. For MySQL on paid plan, add: mysqlclient
+
+# Static files
+whitenoise==6.12.0
+
+# Media / Images
+pillow==12.2.0
+
+# Production WSGI server
+# PythonAnywhere uses uWSGI/mod_wsgi — no extra package needed

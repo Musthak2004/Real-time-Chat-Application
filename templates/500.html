@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>500 — Internal Server Error</h1>
+  <p>Something went wrong on our end. Please try again later.</p>
+  <div class="hero-actions">
+    <a href="{% url 'pages:home' %}" class="btn btn-primary">Go Home</a>
+  </div>
+</div>
+{% endblock %}
