@@ -84,7 +84,10 @@
     {% csrf_token %}
     <input type="text" id="chat-input" name="content" placeholder="Type a message..." autofocus required>
     <input type="hidden" name="message_type" value="TEXT">
-    <button type="submit" aria-label="Send">&rarr;</button>
+    <div class="chat-input-actions">
+      <a href="{% url 'chat_messages:send_message' conversation.pk %}" class="btn-attach" aria-label="Attach file">📎</a>
+      <button type="submit" aria-label="Send">&rarr;</button>
+    </div>
   </form>
 </div>
 {% endblock %}

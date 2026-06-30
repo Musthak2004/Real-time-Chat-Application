@@ -10,9 +10,11 @@
       {% if conversation.conversation_type == "GROUP" %}
         {{ conversation.name|first|default:"G"|upper }}
       {% else %}
-        {% with first_participant=conversation.participants.all|first %}
-          {{ first_participant.username|first|upper }}
-        {% endwith %}
+        {% for participant in conversation.participants.all %}
+          {% if participant != request.user %}
+            {{ participant.username|first|upper }}
+          {% endif %}
+        {% endfor %}
       {% endif %}
     </div>
     <div>
@@ -74,6 +76,20 @@
       {{ form.content }}
       {% if form.content.errors %}
         <div class="form-errors">{{ form.content.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    <div class="form-group" style="margin-bottom: 8px;">
+      <label for="id_attachment">Attachment</label>
+      {{ form.attachment }}
+      {% if form.attachment.errors %}
+        <div class="form-errors">{{ form.attachment.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    <div class="form-group" style="margin-bottom: 8px;">
+      <label for="id_message_type">Type</label>
+      {{ form.message_type }}
+      {% if form.message_type.errors %}
+        <div class="form-errors">{{ form.message_type.errors|striptags }}</div>
       {% endif %}
     </div>
     <button type="submit" aria-label="Send">&rarr;</button>
