@@ -153,4 +153,5 @@ MEDIA_URL = env("MEDIA_URL", "/media/")
 MEDIA_ROOT = env("MEDIA_ROOT", str(BASE_DIR / "media"))
 
 # ─── Celery ──────────────────────────────────────────────
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", "redis://localhost:6379/1")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", "")
+CELERY_TASK_ALWAYS_EAGER = True
