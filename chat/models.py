@@ -56,6 +56,29 @@ class Conversation(models.Model):
     class Meta:
         verbose_name = "conversation"
         verbose_name_plural = "conversations"
+        indexes = [
+            models.Index(fields=["-updated_at"]),
+        ]
+
+    def display_name(self, user):
+        if self.conversation_type == "GROUP":
+            return self.name or "Unnamed Group"
+        other = self.participants.exclude(pk=user.pk).first()
+        return other.username if other else "Unknown"
+
+    def display_initial(self, user):
+        if self.conversation_type == "GROUP":
+            return (self.name or "G")[0].upper()
+        other = self.participants.exclude(pk=user.pk).first()
+        return other.username[0].upper() if other else "?"
+
+    def display_status(self, user):
+        if self.conversation_type == "GROUP":
+            return f"{self.participants.count()} members"
+        other = self.participants.exclude(pk=user.pk).first()
+        if other and other.is_online:
+            return "Online"
+        return "Offline"
 
     def __str__(self):
         if self.conversation_type == "GROUP":

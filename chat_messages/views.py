@@ -31,6 +31,13 @@ class MessageCreateView(
             participants=self.request.user,
         )
 
+        context["messages"] = (
+            context["conversation"]
+            .messages
+            .select_related("sender")
+            .order_by("created_at")
+        )
+
         return context
 
     def form_valid(self, form):

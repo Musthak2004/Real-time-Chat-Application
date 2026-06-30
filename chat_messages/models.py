@@ -66,6 +66,10 @@ class Message(models.Model):
         verbose_name = "message"
         verbose_name_plural = "messages"
         ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["conversation", "created_at"]),
+        ]
 
     def __str__(self):
         return f"{self.sender.username}: {self.content[:50] or '[attachment]'}"
