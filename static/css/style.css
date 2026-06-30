@@ -747,6 +747,73 @@ a:hover {
   transform: scale(0.92);
 }
 
+/* ─── Notification-specific ──────────────────────────── */
+
+.notification-item {
+  margin-bottom: 8px;
+}
+
+.notification-item.unread {
+  border-color: var(--primary-light);
+  background: #f0f5ff;
+}
+
+.notification-icon {
+  font-size: 1.2rem;
+}
+
+.btn-mark-read {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* ─── Empty state ───────────────────────────────────── */
+
+.empty-state {
+  padding: 48px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* ─── Chat input actions ────────────────────────────── */
+
+.chat-input-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.btn-attach {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-attach:hover {
+  background: var(--bg);
+}
+
+/* ─── Form group compact ────────────────────────────── */
+
+.form-group-compact {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-group-sm {
+  margin-bottom: 8px;
+}
+
 /* ─── Section title (for future pages) ─────────────────── */
 
 .section-title {

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load chat_tags %}
 
 {% block title %}Conversations{% endblock %}
 
@@ -13,31 +14,15 @@
     {% for conversation in conversations %}
       <a href="{% url 'chat:conversation_detail' conversation.pk %}" class="conversation-card">
         <div class="conv-avatar">
-          {% if conversation.conversation_type == "GROUP" %}
-            {{ conversation.name|first|default:"G"|upper }}
-          {% else %}
-            {% for participant in conversation.participants.all %}
-              {% if participant != request.user %}
-                {{ participant.username|first|upper }}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          {{ conversation|display_initial:request.user }}
         </div>
         <div class="conv-info">
           <div class="conv-name">
-            {% if conversation.conversation_type == "GROUP" %}
-              {{ conversation.name|default:"Unnamed Group" }}
-            {% else %}
-              {% for participant in conversation.participants.all %}
-                {% if participant != request.user %}
-                  {{ participant.username }}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
+            {{ conversation|display_name:request.user }}
           </div>
           <div class="conv-preview">
             {% if conversation.conversation_type == "GROUP" %}
-              {{ conversation.participants.count }} members
+              {{ conversation.member_count }} members
             {% else %}
               Private conversation
             {% endif %}
@@ -50,8 +35,8 @@
     {% endfor %}
   </div>
 {% else %}
-  <div class="card card-centered" style="padding: 48px;">
-    <p style="color: var(--text-muted); margin-bottom: 16px;">No conversations yet.</p>
+  <div class="card card-centered empty-state">
+    <p>No conversations yet.</p>
     <a href="{% url 'chat:conversation_create' %}" class="btn btn-primary">Start a Conversation</a>
   </div>
 {% endif %}

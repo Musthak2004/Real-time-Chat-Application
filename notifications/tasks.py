@@ -4,10 +4,14 @@ from chat.models import Conversation
 from notifications.models import Notification
 
 
-@shared_task
-def create_notification(conversation_id, sender_id, content):
+@shared_task(bind=True, max_retries=2)
+def create_notification(self, conversation_id, sender_id, content):
 
-    conversation = Conversation.objects.get(pk=conversation_id)
+    try:
+        conversation = Conversation.objects.get(pk=conversation_id)
+    except Conversation.DoesNotExist:
+        return
+
     sender_name = conversation.participants.get(pk=sender_id).username
 
     for participant in conversation.participants.exclude(pk=sender_id):

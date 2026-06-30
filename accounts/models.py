@@ -60,5 +60,11 @@ class CustomUser(AbstractUser):
         "username"
     ]
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        from django.utils import timezone
+        if self.date_of_birth and self.date_of_birth > timezone.now().date():
+            raise ValidationError({"date_of_birth": "Date of birth cannot be in the future."})
+
     def __str__(self):
         return self.username

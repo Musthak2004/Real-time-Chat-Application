@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load chat_tags %}
 
 {% block title %}Send Message{% endblock %}
 
@@ -7,40 +8,20 @@
   <div class="chat-detail-header">
     <a href="{% url 'chat:conversation_detail' conversation.pk %}" class="back-btn">&larr;</a>
     <div class="conv-avatar">
-      {% if conversation.conversation_type == "GROUP" %}
-        {{ conversation.name|first|default:"G"|upper }}
-      {% else %}
-        {% for participant in conversation.participants.all %}
-          {% if participant != request.user %}
-            {{ participant.username|first|upper }}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+      {{ conversation|display_initial:request.user }}
     </div>
     <div>
       <div class="conv-name">
-        {% if conversation.conversation_type == "GROUP" %}
-          {{ conversation.name|default:"Unnamed Group" }}
-        {% else %}
-          {% for participant in conversation.participants.all %}
-            {% if participant != request.user %}
-              {{ participant.username }}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
+        {{ conversation|display_name:request.user }}
       </div>
       <div class="conv-status">
-        {% if conversation.conversation_type == "GROUP" %}
-          {{ conversation.participants.count }} members
-        {% else %}
-          Private conversation
-        {% endif %}
+        {{ conversation|display_status:request.user }}
       </div>
     </div>
   </div>
 
   <div class="chat-messages">
-    {% for message in conversation.messages.all %}
+    {% for message in messages %}
       <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
         {% if message.sender != request.user %}
           <div class="msg-sender">{{ message.sender.username }}</div>
@@ -72,20 +53,20 @@
 
   <form class="chat-input-area" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+    <div class="form-group form-group-compact">
       {{ form.content }}
       {% if form.content.errors %}
         <div class="form-errors">{{ form.content.errors|striptags }}</div>
       {% endif %}
     </div>
-    <div class="form-group" style="margin-bottom: 8px;">
+    <div class="form-group form-group-sm">
       <label for="id_attachment">Attachment</label>
       {{ form.attachment }}
       {% if form.attachment.errors %}
         <div class="form-errors">{{ form.attachment.errors|striptags }}</div>
       {% endif %}
     </div>
-    <div class="form-group" style="margin-bottom: 8px;">
+    <div class="form-group form-group-sm">
       <label for="id_message_type">Type</label>
       {{ form.message_type }}
       {% if form.message_type.errors %}
